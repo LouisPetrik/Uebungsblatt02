@@ -2,3 +2,17 @@ Was es zu tun gibt:
 Für die möglichkeit des einloggens muss mit den sessions gearbeitet werden und vermutlich die ganze liste 
 in der session mit den möglichen kunden rausgenommen werden. 
 
+
+Anfangen damit, auf der registrierungsseite actually den User in der Datenbank zu speichern. 
+Zu beachten: - Email Regex benutzen. 
+
+
+Für die Kunden-Id könnte man einfach pro eintrag das feld inkrementieren. 
+Oder man generiert eine unique ID mit Java. 
+
+Die regex für vorname und nachname müssen nicht richtig funktionsfähig gemacht werden. Außerdem muss 
+noch sauber abgefangen werden, falls da wirklich etwas falsch ist.
+
+
+String mit verschiedenen zeichen: character varying in postgres 
+ 

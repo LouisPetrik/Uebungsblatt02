@@ -4,7 +4,7 @@
 CREATE TABLE kunde
 (
     kundenid integer NOT NULL,
-    email "char"[] NOT NULL UNIQUE,
+    email character varying NOT NULL UNIQUE,
     vorname text NOT NULL,
     nachname text NOT NULL,
     alter integer NOT NULL,
@@ -17,13 +17,13 @@ CREATE TABLE kunde
 
 CREATE TABLE passwort (
 	kundenid integer NOT NULL REFERENCES kunde (kundenid), 
-	passwort "char"[] NOT NULL
+	passwort character varying NOT NULL
 );
 
 CREATE TABLE konto (
 	kontoid integer NOT NULL UNIQUE, 
-	kundenemail "char"[] NOT NULL REFERENCES kunde (email), 
-	name "char"[] NOT NULL, 
+	kundenemail character varying NOT NULL REFERENCES kunde (email), 
+	name character varying NOT NULL, 
 	kontostand double precision NOT NULL 
 );
 

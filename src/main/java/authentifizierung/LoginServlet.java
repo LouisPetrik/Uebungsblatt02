@@ -5,8 +5,7 @@ package authentifizierung;
  */
 import java.io.IOException;
 import java.util.ArrayList;
-
-
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -39,14 +38,11 @@ public class LoginServlet extends HttpServlet {
      * die Daten verloren gehen - was leider ziemlich nervig ist. 
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	
     	System.out.println("get request an LoginServlet"); 
+    	
 
-  
-    	if (DatabaseKunden.fuegeKundeHinzu()) {
-    		System.out.println("success beim einfügen in SQL"); 
-    	} else {
-    		System.out.println("Kein success beim einfügen in SQL"); 
-    	}
+
     	
         request.getRequestDispatcher("konto.jsp").forward(request, response);
     }
@@ -54,6 +50,20 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email"); 
         String passwort = request.getParameter("passwort");
+        
+        
+        // hier wird die E-mail mit regex getestet 
+        boolean regexMatch = false; 
+        
+        regexMatch = Pattern.matches("^[^@\\s]+@[^@\\s\\.]+\\.[^@\\.\\s]+$", email); 
+        
+        if (regexMatch) {
+        	System.out.println("Die E-Mail ist Regex-konform"); 
+        } else {
+        	System.out.println("Die E-Mail ist nicht regex-konform"); 
+        }
+        
+   
 
         HttpSession session = request.getSession();
         ArrayList<Kunde> kundenliste = (ArrayList<Kunde>) session.getAttribute("bank.kundenliste"); 
