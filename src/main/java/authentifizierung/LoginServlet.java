@@ -15,9 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
+
 import banking.Konto;
 import banking.Kunde; 
 
+
+import database.DatabaseKunden; 
 
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
@@ -35,6 +39,15 @@ public class LoginServlet extends HttpServlet {
      * die Daten verloren gehen - was leider ziemlich nervig ist. 
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	System.out.println("get request an LoginServlet"); 
+
+  
+    	if (DatabaseKunden.fuegeKundeHinzu()) {
+    		System.out.println("success beim einfügen in SQL"); 
+    	} else {
+    		System.out.println("Kein success beim einfügen in SQL"); 
+    	}
+    	
         request.getRequestDispatcher("konto.jsp").forward(request, response);
     }
 

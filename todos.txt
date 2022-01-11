@@ -1,0 +1,4 @@
+Was es zu tun gibt: 
+Für die möglichkeit des einloggens muss mit den sessions gearbeitet werden und vermutlich die ganze liste 
+in der session mit den möglichen kunden rausgenommen werden. 
+
