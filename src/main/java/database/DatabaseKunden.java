@@ -159,7 +159,6 @@ public class DatabaseKunden {
         		
         		
         		
-        		
     			System.out.println("Passwort aus der db " + abgefragtesPasswort); 
         		System.out.println("Email aus der db " + abgefragteEmail); 
         		
@@ -187,7 +186,7 @@ public class DatabaseKunden {
     			
     			// Insofern zwar ein Account gefunden wurde, aber nicht das richitge passwort eingegeben wurde: 
     			if (accountGefunden && !passwort.equals(abgefragtesPasswort)) {
-    				fehlermeldung = "Das eingegebene Passwort ist falsch"; 
+    				fehlermeldung = "Konto existiert zwar, aber das eingegebene Passwort ist falsch"; 
     			}
     			
   

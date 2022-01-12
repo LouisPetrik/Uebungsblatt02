@@ -48,6 +48,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	HttpSession session = request.getSession();
+    	
         String email = request.getParameter("email"); 
         String passwort = request.getParameter("passwort");
         
@@ -74,11 +76,25 @@ public class LoginServlet extends HttpServlet {
         	System.out.println("LoginServlet: Kunde wurde erfolgreich eingeloggt"); 
         	System.out.println("LoginServlet, Kundenname " + eingeloggterKunde.vorname);
         	
+        	// Kundenobjekt wird erstellt und in der Session gespeichert: 
+        	session.setAttribute("kunde", eingeloggterKunde); 
+        	
+        	// Da der Kunde erfolgreich eingeloggt wurde, wird ihm seine persönliche Konto-Seite angezeigt: 
+        	// Eventuell muss hier statt auf die JSP selbst auf die GET methode des KontoServlets umgeleitet werden 
+        	// damit vor dem rendern die DB-abfrage stattfinden kann. 
+        	request.getRequestDispatcher("konto.jsp").forward(request, response); 
+        	
         } else {
         	System.out.println("Fehler im Kundenobjekt " + eingeloggterKunde.fehlermeldung); 
+        	
+        	// insofern ein fehler auftritt, bleibt der user mit einer fehlermeldung auf der login.jsp 
+        	
+            request.setAttribute("fehlertyp", eingeloggterKunde.fehlermeldung); 
+            request.getRequestDispatcher("login.jsp").forward(request, response); 
+        	
         }
    
-
+        /*
         HttpSession session = request.getSession();
         ArrayList<Kunde> kundenliste = (ArrayList<Kunde>) session.getAttribute("bank.kundenliste"); 
 
@@ -103,5 +119,6 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("fehlertyp", "Es gibt keine registrierten Kunden"); 
             request.getRequestDispatcher("login.jsp").forward(request, response); 
         }
+        */
     }
 }

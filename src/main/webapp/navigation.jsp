@@ -15,21 +15,35 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="index.jsp">Start</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="login.jsp">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="registrierung.jsp">Registrierung</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="konto.jsp">Konto</a>
-                </li>
+                
+                <!--  Wenn der Kunde NICHT angemeldet ist -->
+                <c:if test="${ sessionScope.kunde == null }">
+	               	<li class="nav-item">
+	                    <a class="nav-link" href="login.jsp">Login</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" href="registrierung.jsp">Registrierung</a>
+	                </li>
+                </c:if>
+                
+                <!--  Wenn der Kunde angemeldet ist -->
+                <c:if test="${ sessionScope.kunde != null}">
+	                <li class="nav-item">
+	                    <a class="nav-link" href="konto.jsp">Konto</a>
+	                </li>
+	                 <li class="nav-item">
+	                    <a class="nav-link" href="logout.jsp">Logout</a>
+	                </li>
+                </c:if>
+                
+          
+             
             </ul>
             <span class="navbar-text">
-            	<c:if test="${ sessionScope.kunde.getEmail() != null }">
-            		Eingeloggt als: <b>${ sessionScope.kunde.getEmail() }</b>
+            	<c:if test="${ sessionScope.kunde != null }">
+            		Hallo, <b>${ sessionScope.kunde.getVorname() }</b>
             	</c:if>
-            	<c:if test="${ !sessionScope.kunde.getEmail() }">
+            	<c:if test="${ sessionScope.kunde == null }">
             		Online Bank
             	</c:if>
                 

@@ -8,6 +8,16 @@
         <jsp:include page="navigation.jsp" />
 
         <div class="container">
+        
+          <!--  Wenn der Kunde NICHT angemeldet ist -->
+         <c:if test="${ sessionScope.kunde == null }">
+	     	<p>Du bist nicht angemeldet</p>
+	     	<p>Bitte <a href="registrierung.jsp">registriere</a> dich zuerst oder <a href="login.jsp">melde dich mit deinem bestehenden Konto an</a></p>
+          </c:if>
+          
+          <!-- Wenn der Kunde angemeldet ist -->
+          <c:if test="${ sessionScope.kunde != null }">
+          
             <h1>Hallo, ${ sessionScope.kunde.getVorname() } ${ sessionScope.kunde.getNachname() } </h1>
 
 			<h2>Hier können sie weitere Konten anlegen:</h2>
@@ -36,7 +46,11 @@
 			${ sessionScope.showKonto }
 
 			${ sessionScope.kontostand }
+        
+          </c:if>
+          
         </div>
+     
 
         <jsp:include page="footer.jsp" />
     </body>
