@@ -63,6 +63,20 @@ public class LoginServlet extends HttpServlet {
         	System.out.println("Die E-Mail ist nicht regex-konform"); 
         }
         
+        
+        // die eingaben in der datenbank überprüfen, und gegebenfalls den kunden einloggen
+        
+        Kunde eingeloggterKunde = DatabaseKunden.kundeEinlogggen(email, passwort); 
+        
+        // Insofern es keinen fehler gab, ist das fehlermeldungs-feld des objekts null
+        if (eingeloggterKunde.fehlermeldung == null) {
+        	
+        	System.out.println("LoginServlet: Kunde wurde erfolgreich eingeloggt"); 
+        	System.out.println("LoginServlet, Kundenname " + eingeloggterKunde.vorname);
+        	
+        } else {
+        	System.out.println("Fehler im Kundenobjekt " + eingeloggterKunde.fehlermeldung); 
+        }
    
 
         HttpSession session = request.getSession();

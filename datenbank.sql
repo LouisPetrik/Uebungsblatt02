@@ -37,3 +37,7 @@ CREATE TABLE kategorie (
 	name text, 
 	schlagwort text
 );
+
+
+/* weiterer schnick-schnack. So kommt man an den kunden über seine eingegebene email: */
+SELECT email, passwort FROM kunde INNER JOIN passwort USING (kundenid) WHERE email = 'julez@aol.com'; 

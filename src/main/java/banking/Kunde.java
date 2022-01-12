@@ -11,6 +11,10 @@ public class Kunde {
     public String bankinstitut;
     public String passwort;
     public Boolean newsletter;
+    
+    // Insofern es ein Problem mit dem Kundenobjekt gibt, z. B. Kein Kunde gefunden wird, wird hier 
+    // die fehlermeldung gespeichert. 
+    public String fehlermeldung; 
 
     // Ein nutzer kann mehrere Konten haben, die als Liste von Konten-Objekten gespeichert werden.
     public ArrayList<Konto> kontenliste = new ArrayList<>();
