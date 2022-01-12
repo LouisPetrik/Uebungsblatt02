@@ -24,4 +24,4 @@ der kundenliste können raus. Info für die session des eingeloggten Users:
 Zu aufgabe a) mit dem anzeigen des namens der bank: Die einlog-mechanik funktioniert soweit, aber in der navigation.jsp 
 muss noch der name der bank angezeigt werden. Wichtig: Wir dürfen dafür ja die Expression Language nutzen. Wir dürfen auch die JSTL 
 nutzen. Ein beispiel für if-else ist in der navigation.jsp zu sehen. 
-
+Man darf nicht vergessen, dass page-encoding wie in der navigation.jsp anzupassen, sonst funktioniert JSTL nicht. 
