@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!--  JSP datei für die navgationsleiste in bootstrap -->
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -24,7 +26,13 @@
                 </li>
             </ul>
             <span class="navbar-text">
-                Eingeloggt als: <b>${ sessionScope.kunde.getEmail() }</b>
+            	<c:if test="${ sessionScope.kunde.getEmail() != null }">
+            		Eingeloggt als: <b>${ sessionScope.kunde.getEmail() }</b>
+            	</c:if>
+            	<c:if test="${ !sessionScope.kunde.getEmail() }">
+            		Online Bank
+            	</c:if>
+                
             </span>
         </div>
     </div>
