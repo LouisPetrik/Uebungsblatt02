@@ -94,31 +94,6 @@ public class LoginServlet extends HttpServlet {
         	
         }
    
-        /*
-        HttpSession session = request.getSession();
-        ArrayList<Kunde> kundenliste = (ArrayList<Kunde>) session.getAttribute("bank.kundenliste"); 
-
-        if (kundenliste != null) {
-        	if (Validierung.hasEmail(kundenliste, email)) {
-                for (Kunde kunde : kundenliste) {
-                    if (kunde.email.equals(email) && kunde.passwort.equals(passwort)) {
-                        session.setAttribute("kunde", kunde);
-                        request.getRequestDispatcher("konto.jsp").forward(request, response);
-                        return;
-                    } 
-                }	
-            }
-
-        	System.out.println("Email oder passwort ist falsch"); 
-            request.setAttribute("fehlertyp", "E-Mail oder Passwort ist falsch");
-            request.getRequestDispatcher("login.jsp").forward(request, response); 
-
-        // für den Fall, dass es überhaupt Kunden in der DB gibt
-        } else {
-            System.out.println("Keine Kunden registriert"); 
-            request.setAttribute("fehlertyp", "Es gibt keine registrierten Kunden"); 
-            request.getRequestDispatcher("login.jsp").forward(request, response); 
-        }
-        */
+  
     }
 }

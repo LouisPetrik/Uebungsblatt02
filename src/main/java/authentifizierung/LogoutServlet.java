@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import banking.Kunde;
+
 /**
  * Servlet implementation class LogoutServlet
  */
@@ -34,14 +36,17 @@ public class LogoutServlet extends HttpServlet {
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // bisher wird hier die komplette User-Datenbank gelöscht. Aber nur die Session vom User soll gelöscht werden. 
-        System.out.println("User möchte sich abmelden"); 
-
+      
         HttpSession session = request.getSession();        
-        // redirecten auf die logout.jsp wo der Kunde noch verabschiedet wird. 
-        // Die Session wird erst danach von dem Kunden bereinigt, damit die konto.jsp noch 
-        // auf die Attribute des Kunden aus der Session zugreifen kann. 
-        request.getRequestDispatcher("logout.jsp").forward(request, response); 
+           
+        // kundenobjekt des noch angemeldeten kundens aus der session holen 
+        Kunde kunde = (Kunde) session.getAttribute("kunde"); 
+   
+        
+        // gibt noch vor und nachname an die logout.jsp weiter, ohne dass diese dafür auf die bereits gelöschte session zugreifen muss
+        request.setAttribute("kunde_vorname", kunde.vorname); 
+        request.setAttribute("kunde_nachname", kunde.nachname);
+
 
         // Damit wird aus der Session nur das Kundenobjekt, also der aktuell eingeloggte Kunde entfernt 
         // Die gesamte Kundendatenbank die in der Sessino die registrierten Kunden verzeichnet, bleibt erhalten. 
@@ -52,5 +57,11 @@ public class LogoutServlet extends HttpServlet {
         session.removeAttribute("kontenForm");
         session.removeAttribute("showKonto");
         session.removeAttribute("kontostand");
+        
+        
+        // redirecten auf die logout.jsp wo der Kunde noch verabschiedet wird. 
+        // Die Session wird erst danach von dem Kunden bereinigt, damit die konto.jsp noch 
+        // auf die Attribute des Kunden aus der Session zugreifen kann. 
+        request.getRequestDispatcher("logout.jsp").forward(request, response); 
     }
 }
