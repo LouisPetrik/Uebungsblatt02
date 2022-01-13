@@ -4,6 +4,7 @@ import banking.Konto;
 import java.util.ArrayList;
 
 public class Kunde {
+	public Integer kundenid; 
     public String vorname;
     public String nachname;
     public Integer alter;
@@ -28,7 +29,6 @@ public class Kunde {
         this.bankinstitut = bankinstitut;
         this.passwort = passwort;
         this.newsletter = newsletter;
-
     }
     
     public String kontenAsHTML() {
@@ -50,7 +50,18 @@ public class Kunde {
     Sie helfen dabei, dass Objekt-Werte in den Templates genutzt werden können und
     schützen vor versehentlichen mutaten beim Zugriff auf die Attribute via .-Syntax.
     */
-    public String getVorname() {
+    
+    // Der setter für die kundenid. Kundenid ist nicht im konstruktur, damit man dynamischer die ID setzen kann. 
+    // Z.B weil die ID von der DB abhängt und automatisch vergeben wird, daher kann sie nicht schon über den konstruktor festgelegt werden. 
+    public void setKundenid(Integer kundenid) {
+    	this.kundenid = kundenid; 
+    }
+    
+    public Integer getKundenid() {
+    	return this.kundenid; 
+    }
+    
+    public String getVorname() { 
         return this.vorname;
     }
 

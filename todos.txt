@@ -15,10 +15,7 @@ noch sauber abgefangen werden, falls da wirklich etwas falsch ist.
 
 
 String mit verschiedenen zeichen: character varying in postgres 
- 
- 
-Damit der user eingeloggt ist, wird eine session erstellt, als wer er eingeloggt ist. Die anderen sessions mit
-der kundenliste können raus. Info für die session des eingeloggten Users: 
+
 
 
 Zu aufgabe a) mit dem anzeigen des namens der bank: Die einlog-mechanik funktioniert soweit, aber in der navigation.jsp 
@@ -26,6 +23,14 @@ muss noch der name der bank angezeigt werden. Wichtig: Wir dürfen dafür ja die E
 nutzen. Ein beispiel für if-else ist in der navigation.jsp zu sehen. 
 Man darf nicht vergessen, dass page-encoding wie in der navigation.jsp anzupassen, sonst funktioniert JSTL nicht. 
 
+Zu den Aufgaben 5 und 6: 
 
-in der einlog-methode könnte man statt dem aktuell sehr ekeligen approach einfach ein void-object 
-generieren, https://stackoverflow.com/questions/2408626/returning-a-void-object
+Ein Kunde kann mehrere Konten haben. Ein Konto kann mehrere Posten haben. 
+In die tabelle "posten" wird nun die excel datei importiert, die damit sämtliche transaktionen für 
+ein einzelnes konto hält. 
+
+Für das erstellen eines neuen Kontos muss auch immer die kundenid bekannt sein. Vermutlich muss 
+diese also noch aus der Datenbank beim Login in das kundenobjekt in der session gespeichert werden. 
+Bisher wird eine ID für den 
+
+Liste der Konten muss vermutlich in der Session gespeichert werden. 

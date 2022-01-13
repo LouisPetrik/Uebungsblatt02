@@ -19,6 +19,7 @@
           <c:if test="${ sessionScope.kunde != null }">
           
             <h1>Hallo, ${ sessionScope.kunde.getVorname() } ${ sessionScope.kunde.getNachname() } </h1>
+            <p>Kundenid: ${ sessionScope.kunde.getKundenid() }
 
 			<h2>Hier können sie weitere Konten anlegen:</h2>
 

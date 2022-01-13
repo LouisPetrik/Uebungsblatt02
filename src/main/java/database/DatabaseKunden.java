@@ -124,7 +124,7 @@ public class DatabaseKunden {
     		con = DatabaseConnection.getConnection(); 
     		// Den Kunden samt passwort ausgeben, der über die angegebene email verfügt. 
     		PreparedStatement pstmt = con.prepareStatement(""
-    				+ "SELECT vorname, nachname, email, alter, agb, newsletter, bank, passwort FROM kunde INNER JOIN passwort USING (kundenid) WHERE email = ?;"
+    				+ "SELECT kundenid, vorname, nachname, email, alter, agb, newsletter, bank, passwort FROM kunde INNER JOIN passwort USING (kundenid) WHERE email = ?;"
     				+ "");
     		
     		pstmt.setString(1, email);
@@ -135,6 +135,8 @@ public class DatabaseKunden {
     		// ein tatsächlich existierender nutzer gefunden wird. Alle auf leeren string / 0 gesetzt, weil sich eclipse sonst beschwert. 
     		String abgefragtesPasswort = ""; 
     		String abgefragteEmail = ""; 
+    		
+    		Integer kundenid = 0; 
     		String vorname = ""; 
     		String nachname = "";
     		Integer alter = 0; 
@@ -150,6 +152,7 @@ public class DatabaseKunden {
         		abgefragteEmail = rs.getString("email");  
         		
         		// alle anderen daten aus der datenbank übernehmen
+        		kundenid = rs.getInt("kundenid"); 
         		vorname = rs.getString("vorname");
         		nachname = rs.getString("nachname"); 
         		alter = rs.getInt("alter"); 
@@ -175,6 +178,9 @@ public class DatabaseKunden {
     			
     			// erstellen eines nutzer-objektes 
     			eingeloggterKunde = new Kunde(vorname, nachname, alter, abgefragteEmail, bankinstitut, "", newsletter); 
+    			// DIe kundenid, die ebenfalls aus der Datenbank geholt wurde setzen. Das geschieht bisher nicht über den konstruktor, siehe 
+    			// Kunde.java warum. 
+    			eingeloggterKunde.setKundenid(kundenid);
     			
     		// irgendwas ist schiefgelaufen: 
     		} else {
