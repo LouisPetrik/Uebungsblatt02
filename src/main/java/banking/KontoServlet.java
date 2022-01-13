@@ -48,7 +48,13 @@ public class KontoServlet extends HttpServlet {
         if (kontoname != null) {
         	System.out.println("User will Konto " + kontoname);
         	
+        	
+        	// deprecated 
             kunde.kontenliste.add(new Konto(kontoname, kunde.getEmail()));
+            
+            /* anlegen eines neuen kontos in der datenbank. Zur erkennung dient
+             * die email des kundens, ist also foreign key in konto tabelle. 
+            */
             
             if (kunde.kontenAsHTML() == "") {
             	session.setAttribute("kontenForm", "<b>Sie haben bisher keine Konten bei uns</b>"); 
