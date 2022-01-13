@@ -27,35 +27,32 @@ public class DatabaseKunden {
     public static boolean fuegeKundeHinzu(Kunde kunde) {
     	boolean erfolg = false; 
     	
-    	// Die kunden ID, die zuf‰llig generiert wird, und f¸r beide tabellen gebraucht wird. 
-    	int randomKundenID = ThreadLocalRandom.current().nextInt(0, 100000 + 1);
-    	
- 
       	try {
     		con = DatabaseConnection.getConnection(); 
-    		PreparedStatement pstmt = con.prepareStatement("INSERT INTO kunde VALUES ("
-    				+ "?," // kundenid 1
-    				+ "?," // email 2
-    				+ "?," // vorname 3
-    				+ "?," // nachname 4
-    				+ "?," // alter 5
-    				+ "?," // bank 6
-    				+ "?," // agb 7
-    				+ "?" // newsletter 8 
+    		PreparedStatement pstmt = con.prepareStatement("INSERT INTO kunde (email, vorname, nachname, alter, bank, agb, newsletter) VALUES ("
+    				+ "?," // email 1
+    				+ "?," // vorname 2
+    				+ "?," // nachname 3
+    				+ "?," // alter 4
+    				+ "?," // bank 5
+    				+ "?," // agb 6
+    				+ "?" // newsletter 7 
     				+ ")"); 
     		
     	
-    		pstmt.setInt(1, randomKundenID);
-    		pstmt.setString(2, kunde.email);
-    		pstmt.setString(3, kunde.vorname);
-    		pstmt.setString(4, kunde.nachname); 
-    		pstmt.setInt(5, kunde.alter);
-    		pstmt.setString(6, kunde.bankinstitut);
+
+    		pstmt.setString(1, kunde.email);
+    		pstmt.setString(2, kunde.vorname);
+    		pstmt.setString(3, kunde.nachname); 
+    		pstmt.setInt(4, kunde.alter);
+    		pstmt.setString(5, kunde.bankinstitut);
     		// wir nehmen erstmal an, dass der kunde immer AGB akzeptiert hat 
-    		pstmt.setBoolean(7, true);
-    		pstmt.setBoolean(8, kunde.newsletter);
+    		pstmt.setBoolean(6, true);
+    		pstmt.setBoolean(7, kunde.newsletter);
     		
     		int zeilen = pstmt.executeUpdate(); 
+    		
+    		System.out.println("Zeilen aus DatabaseKunden " + zeilen); 
     		
     		if (zeilen > 0) {
     			erfolg = true; 
@@ -73,6 +70,37 @@ public class DatabaseKunden {
     		}
     	}
       	
+      	// nun muss die kundenid des neu erstellen kundens aus der kunde tabelle geholt werden, damit sie als foreign key in passwort tabelle 
+      	// eingesetzt werden kann, da das passwort ja in eine eigene tabelle soll
+      	// muss schon initialisiert sein, weil sich die andere queue sonst beschwert
+      	int kundenid = 0; 
+      	
+      	try {
+      		con = DatabaseConnection.getConnection(); 
+      		PreparedStatement pstmt = con.prepareStatement("SELECT kundenid FROM kunde WHERE email = ?;"); 
+      		pstmt.setString(1, kunde.email);
+      		
+      		ResultSet rs = pstmt.executeQuery(); 
+      		
+      		
+      		
+      		while (rs.next()) {
+        		kundenid = rs.getInt("kundenid"); 
+    		}
+      	} catch (SQLException e) {
+      		System.out.println("Fehler beim Extrahieren der Kundenid des erstellten Kunden"); 
+      		System.out.println(e); 
+      	} finally {
+      		try {
+    			con.close(); 
+    		} catch (SQLException e){
+    			System.out.println("Kann nicht schlieﬂen"); 
+    			System.out.println(e); 
+    		}
+      	}
+      	
+      	
+      	
       	try {
       		con = DatabaseConnection.getConnection(); 
     		PreparedStatement pstmt = con.prepareStatement("INSERT INTO passwort VALUES ("
@@ -80,12 +108,10 @@ public class DatabaseKunden {
     				+ "?" // passwort 2
     				+ ")"); 
     		
-    		pstmt.setInt(1, randomKundenID);
+    		pstmt.setInt(1, kundenid);
     		pstmt.setString(2, kunde.passwort);
     		
     		pstmt.executeUpdate(); 
- 
-    		
    
       	} catch (SQLException e) {
     		System.out.println("Fehler beim speichern des passwortes"); 

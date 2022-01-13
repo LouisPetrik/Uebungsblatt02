@@ -14,7 +14,7 @@ import banking.Konto;
 public class DatabaseKonto {
 	
     private static Connection con = null; 
-    
+    /*
     public static boolean fuegeKontoHinzu(Konto konto) {
     
         
@@ -96,5 +96,5 @@ public class DatabaseKonto {
     	
     	
     	return erfolg; 
-    }
+    }*/
 }
