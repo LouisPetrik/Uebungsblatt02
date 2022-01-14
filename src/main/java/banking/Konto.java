@@ -11,22 +11,15 @@ public class Konto {
     public final String name;
     public final String kundenemail;
     public final Integer kontoid;
-    public Double kontostand;
+    private Double kontostand;
 
-    // private final String ID;
-    private ArrayList<Transaktion> txs = new ArrayList<>();
+    public ArrayList<Transaktion> txs = new ArrayList<>();
 
     public Konto(Integer kontoid, String name, String kundenemail, Double kontostand) {
         this.kontoid = kontoid;
         this.name = name;
-        // die Email des Kundens
         this.kundenemail = kundenemail;
         this.kontostand = kontostand;
-
-        // statt über den Konstrukor einen Wert für die ID entgegenzunehmen wird bei
-        // jeder erstellen Instanz eines Kontos eine einzigartige ID generiert.
-        // ist vermutlich deprecated
-        // this.ID = UUID.randomUUID().toString();
     }
 
 
@@ -47,8 +40,7 @@ public class Konto {
             }
         }
 
-        if (firstIdx != -1 && lastIdx != -1)
-        {
+        if (firstIdx != -1 && lastIdx != -1) {
             String tmp[] = new String[fields.length - lastIdx + firstIdx];
 
             // tmp mit allen feldern füllen
@@ -66,10 +58,6 @@ public class Konto {
                 tmp[firstIdx] += ";" + fields[i];
             }
 
-            for (int i = 0; i < tmp.length; i++) {
-                System.out.println(tmp[i]);
-            }
-
             fields = tmp;
         }
 
@@ -77,42 +65,38 @@ public class Konto {
     }
 
     public void loadCSV(String csvFile) {
-        System.out.println("loadCSV!");
+        Scanner scanner = new Scanner(csvFile);
 
-            Scanner scanner = new Scanner(csvFile);
+        // um den header zu überspringen
+        if (scanner.hasNextLine()) {
+            scanner.nextLine();
+        }
 
-            // um den header zu überspringen
-            if (scanner.hasNextLine()) {
-                scanner.nextLine();
+        while (scanner.hasNextLine()) {
+            String txString = scanner.nextLine();
+
+            String fields[] = txString.split(";");
+
+            fields = escapeStrings(fields);
+
+            if (fields.length != 17) {
+                System.out.println("CSV hat keine gültiges Format (sollte 17 Felder haben)!");
+                return;
             }
 
-            while (scanner.hasNextLine()) {
-                String txString = scanner.nextLine();
-
-                String fields[] = txString.split(";");
-
-                // siehe Kommentar über methoden definition
-                // siehe erste Zeile der csv (grund für diese methode)
-                fields = escapeStrings(fields);
-
-                if (fields.length != 17) {
-                    System.out.println("CSV hat keine gültiges Format (sollte 17 Felder haben)!");
-                    return;
-                }
-
-                float f14 = 0.f;
-                fields[14] = fields[14].replace(',', '.');
-                try {
-                     f14 = Float.parseFloat(fields[14]);
-                } catch (NumberFormatException e) {
-                    System.out.println("Feld 15 sollte ein float sein");
-                    return;
-                }
-
-                txs.add(new Transaktion(fields[0], fields[5], fields[3], fields[4], fields[12], f14, fields[15]));
+            float f14 = 0.f;
+            fields[14] = fields[14].replace(',', '.');
+            try {
+                 f14 = Float.parseFloat(fields[14]);
+            } catch (NumberFormatException e) {
+                System.out.println("Feld 15 sollte ein float sein");
+                return;
             }
 
-            scanner.close();
+            txs.add(new Transaktion(fields[0], fields[5], fields[3], fields[4], fields[12], f14, fields[15]));
+        }
+
+        scanner.close();
     }
 
     public float getKontostand() {

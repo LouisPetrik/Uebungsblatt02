@@ -15,19 +15,12 @@ import banking.Kunde;
 import database.DatabaseKonto;
 
 
-/**
- * Servlet implementation class KontoServlet
- */
 @WebServlet("/KontoServlet")
 public class KontoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public KontoServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -47,9 +40,25 @@ public class KontoServlet extends HttpServlet {
         // neues Konto erstellen
         String kontoname = request.getParameter("kontoname");
         if (kontoname != null) {
+            if (kontoname == "") {
+                System.out.println("error leerer Konotoname");
+                // TODO: error message für den front end user
+                request.getRequestDispatcher("konto.jsp").include(request, response);
+                return;
+            }
+
+            // testen ob dieser Kontoname schon genutzt wurde
+            for(int i = 0; i < kunde.kontenliste.size(); i++) {
+                if (kunde.kontenliste.get(i).name == kontoname) {
+                    System.out.println("Konto mit dem Namen" + kontoname + "wurde bereits erstellt");
+                    // TODO: error message für den front end user
+                    request.getRequestDispatcher("konto.jsp").include(request, response);
+                    return;
+                }
+            }
+
             System.out.println("User will Konto " + kontoname);
             System.out.println("Der Kunde ist " + kunde.vorname);
-
 
             // deprecated, nur paar pseudo daten reingemacht, damit nicht alles vor die hunde geht.
             kunde.kontenliste.add(new Konto(0, kontoname, kunde.getEmail(), 0.0));
@@ -58,7 +67,7 @@ public class KontoServlet extends HttpServlet {
              * die email des kundens, ist also foreign key in konto tabelle.
             */
 
-            DatabaseKonto.fuegeKontoHinzu(kunde.getEmail(), kontoname);
+            DatabaseKonto.addKonto(kunde.getEmail(), kontoname);
 
             /*
              * Jetzt sollten die Konten samt ihrer ID in der session gespeichert werden, damit dann transaktionen vorgenommen +
@@ -67,7 +76,7 @@ public class KontoServlet extends HttpServlet {
              */
 
             // alle konten testweise aus der resultierenden array list ausgeben:
-            DatabaseKonto.listeDerKonten(kunde.email).forEach((konto) -> System.out.println(konto.name));
+            DatabaseKonto.getKonten(kunde.email).forEach((konto) -> System.out.println(konto.name));
 
 
 

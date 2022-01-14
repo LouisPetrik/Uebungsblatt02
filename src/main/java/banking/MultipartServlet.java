@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import database.DatabaseKonto;
 
 @WebServlet("/MultipartServlet")
 @MultipartConfig
@@ -45,6 +46,17 @@ public class MultipartServlet extends HttpServlet {
                 // sollte immer true sein aber zur sicherheit
                 if (konto_idx < kunde.kontenliste.size()) {
                     kunde.kontenliste.get(konto_idx).loadCSV(csvFile);
+
+                    // TODO: to addKonto
+                    DatabaseKonto.setKontostand(
+                        kunde.kontenliste.get(konto_idx).kundenemail,
+                        kunde.kontenliste.get(konto_idx).name,
+                        kunde.kontenliste.get(konto_idx).getKontostand());
+
+
+                    int kontoId = DatabaseKonto.getKontoId(kunde.kontenliste.get(konto_idx).kundenemail, kunde.kontenliste.get(konto_idx).name);
+                    System.out.println("kontoId: " + kontoId);
+                    DatabaseKonto.addTxs(kontoId, kunde.kontenliste.get(konto_idx).txs);
 
                     String kontostand = "<p>kontostand: " + kunde.kontenliste.get(konto_idx).getKontostand() + "</p>";
                     session.setAttribute("kontostand", kontostand);
