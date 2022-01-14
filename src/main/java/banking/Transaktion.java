@@ -8,7 +8,7 @@ public class Transaktion {
     public final String payee_iban;
     public final float betrag;
     public final String waehrung;
-    
+
     public Transaktion(String payer, String payee_id, String text,
     		String zweck, String payee_iban, float betrag, String waehrung) {
     	this.payer = payer;
@@ -19,7 +19,7 @@ public class Transaktion {
     	this.betrag = betrag;
     	this.waehrung = waehrung;
     }
-    
+
     public String asHTML() {
     	return payer + " " + betrag + " " + waehrung + " " + zweck;
     }

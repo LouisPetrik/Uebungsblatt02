@@ -10,8 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
-import banking.Konto; 
-import banking.Kunde; 
+import banking.Konto;
+import banking.Kunde;
+import database.DatabaseKonto;
 
 
 /**
@@ -20,7 +21,7 @@ import banking.Kunde;
 @WebServlet("/KontoServlet")
 public class KontoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-       
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -30,14 +31,14 @@ public class KontoServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Hier wird abgefangen, falls jemand nachdem Aufruf der KontoServlet URL die Seite neul‰dt, also
-        // einen GET-Request an /KontoServlet durchf¸hrt - in diesem Fall soll das direkt weiter an die konto.jsp, die alle
+        // Hier wird abgefangen, falls jemand nachdem Aufruf der KontoServlet URL die Seite neul√§dt, also
+        // einen GET-Request an /KontoServlet durchf√ºhrt - in diesem Fall soll das direkt weiter an die konto.jsp, die alle
         // Inhalte darstellt.
         request.getRequestDispatcher("konto.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Damit wir die Session hier auslesen und bearbeiten kˆnnen
+        // Damit wir die Session hier auslesen und bearbeiten k√∂nnen
         HttpSession session = request.getSession();
 
         Kunde kunde = (Kunde) session.getAttribute("kunde");
@@ -46,68 +47,82 @@ public class KontoServlet extends HttpServlet {
         // neues Konto erstellen
         String kontoname = request.getParameter("kontoname");
         if (kontoname != null) {
-        	System.out.println("User will Konto " + kontoname);
-        	
-        	
-        	// deprecated 
-            kunde.kontenliste.add(new Konto(kontoname, kunde.getEmail()));
-            
+            System.out.println("User will Konto " + kontoname);
+            System.out.println("Der Kunde ist " + kunde.vorname);
+
+
+            // deprecated, nur paar pseudo daten reingemacht, damit nicht alles vor die hunde geht.
+            kunde.kontenliste.add(new Konto(0, kontoname, kunde.getEmail(), 0.0));
+
             /* anlegen eines neuen kontos in der datenbank. Zur erkennung dient
-             * die email des kundens, ist also foreign key in konto tabelle. 
+             * die email des kundens, ist also foreign key in konto tabelle.
             */
-            
+
+            DatabaseKonto.fuegeKontoHinzu(kunde.getEmail(), kontoname);
+
+            /*
+             * Jetzt sollten die Konten samt ihrer ID in der session gespeichert werden, damit dann transaktionen vorgenommen +
+             * werden k√∂nnen in der posten-tabelle etc.
+             * Daf√ºr wird die gesamte, aktualisierte Liste der Konten aus der Datenbank geholt, und in einer Session gespeichert:
+             */
+
+            // alle konten testweise aus der resultierenden array list ausgeben:
+            DatabaseKonto.listeDerKonten(kunde.email).forEach((konto) -> System.out.println(konto.name));
+
+
+
             if (kunde.kontenAsHTML() == "") {
-            	session.setAttribute("kontenForm", "<b>Sie haben bisher keine Konten bei uns</b>"); 
+                session.setAttribute("kontenForm", "<b>Sie haben bisher keine Konten bei uns</b>");
             } else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<form method='POST' action='KontoServlet'>");
-                
+
                 sb.append("<select name='selectedKonto'>");
                 sb.append(kunde.kontenAsHTML());
-            	sb.append("</select>");
-            	sb.append("<input type='submit' value='Konto anzeigen'/><br/>");
-            	
+                sb.append("</select>");
+                sb.append("<input type='submit' value='Konto anzeigen'/><br/>");
+
                 sb.append("</form><br/>");
-                
-                
+
+
                 sb.append("<form method='POST' action='MultipartServlet' enctype='multipart/form-data'>");
-                
+
                 sb.append("<select name='selectedKonto'>");
                 sb.append(kunde.kontenAsHTML());
-            	sb.append("</select>");
-            	sb.append("<input type='submit' value='CSV hochladen'><input type='file' name='csvFile'/>");
-            	
+                sb.append("</select>");
+                sb.append("<input type='submit' value='CSV hochladen'><input type='file' name='csvFile'/>");
+
                 sb.append("</form>");
-                
-                session.setAttribute("kontenForm", sb.toString()); 
+
+                session.setAttribute("kontenForm", sb.toString());
             }
         // Konto anzeigen
         } else {
-        	String selectedKonto = request.getParameter("selectedKonto");
-        	
-        	System.out.println("selectedKonto " + selectedKonto);
-        	if (selectedKonto != null) {
-            	int konto_idx = Integer.parseInt(selectedKonto);
-                
+            String selectedKonto = request.getParameter("selectedKonto");
+
+            System.out.println("selectedKonto " + selectedKonto);
+            if (selectedKonto != null) {
+                int konto_idx = Integer.parseInt(selectedKonto);
+
                 StringBuilder sb = new StringBuilder();
                 sb.append("<div class=\"card\"> <div class=\"card-body\">");
-                
+
                 if (kunde.kontenliste.get(konto_idx).hasTxs()) {
-                	 sb.append(kunde.kontenliste.get(konto_idx).txsAsHTML());
+                     sb.append(kunde.kontenliste.get(konto_idx).txsAsHTML());
                 } else {
-                	sb.append("<b>keine Transaktionen (laden sie eine CSV hoch)</b>");
-                }    
-                
+                    sb.append("<b>keine Transaktionen (laden sie eine CSV hoch)</b>");
+                }
+
                 sb.append("</div></div>");
-                
+
                 session.setAttribute("showKonto", sb.toString());
-        	}
+            }
         }
-        
-        
-        // Wichtig: Dies included nur den Inhalt der JSP, das heiﬂt s‰mtliche Attribute die
-        // beim Redirect zur konto.jsp anf‰nglich ¸bergeben werden, sind verloren. Daher wurden
-        // viele Daten in der Session gespeichert. 
+
+
+        // Wichtig: Dies included nur den Inhalt der JSP, das hei√üt s√§mtliche Attribute die
+        // beim Redirect zur konto.jsp anf√§nglich √ºbergeben werden, sind verloren. Daher wurden
+        // viele Daten in der Session gespeichert.
         request.getRequestDispatcher("konto.jsp").include(request, response);
     }
 }
