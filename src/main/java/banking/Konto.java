@@ -91,21 +91,21 @@ public class Konto {
 
             txs.add(new Transaktion(fields[4], f14));
         }
-        
+
         setKontostand();
 
         scanner.close();
     }
 
     public double getKontostand() {
-    	return kontostand;
+        return kontostand;
     }
-    
+
     public void setKontostand() {
-    	kontostand = 0.0;
+        kontostand = 0.0;
 
         for (Transaktion tx : txs) {
-        	kontostand += tx.betrag;
+            kontostand += tx.betrag;
         }
     }
 
@@ -118,7 +118,7 @@ public class Konto {
 
         sb.append("<table>");
         for (Transaktion tx : txs) {
-            sb.append("<tr>" + tx.asHTML() + "<tr/>");
+            sb.append("<tr>" + tx.asHTML() + "</tr>");
         }
         sb.append("</table>");
 
