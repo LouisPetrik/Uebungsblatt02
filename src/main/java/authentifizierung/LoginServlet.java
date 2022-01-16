@@ -18,8 +18,7 @@ import javax.servlet.http.HttpSession;
 
 import banking.Konto;
 import banking.Kunde;
-
-
+import database.DatabaseKategorie;
 import database.DatabaseKunden;
 
 @WebServlet("/LoginServlet")
@@ -82,6 +81,12 @@ public class LoginServlet extends HttpServlet {
             // Da der Kunde erfolgreich eingeloggt wurde, wird ihm seine persönliche Konto-Seite angezeigt:
             // Eventuell muss hier statt auf die JSP selbst auf die GET methode des KontoServlets umgeleitet werden
             // damit vor dem rendern die DB-abfrage stattfinden kann.
+            
+            // damit der kunde in der konto-seite auf die kategorien zugreifen kann, werden diese noch aus der DB in der session gespeichert: 
+            ArrayList<String> kategorienListe = new ArrayList<>(DatabaseKategorie.kategorienAusgeben());
+            
+            session.setAttribute("kategorienListe", kategorienListe); 
+            
             request.getRequestDispatcher("konto.jsp").forward(request, response);
 
         } else {

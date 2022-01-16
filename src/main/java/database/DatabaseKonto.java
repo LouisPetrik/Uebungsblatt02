@@ -168,13 +168,14 @@ public class DatabaseKonto {
         } catch (SQLException e) {
             System.out.println("Fehler beim Ausgeben aller Konten des Kunden");
             System.out.println(e);
-        }
-
-        try {
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Kann nicht schließen");
-            System.out.println(e);
+        // frisch eingefügt
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e){
+                System.out.println("Kann nicht schlie�en");
+                System.out.println(e);
+            }
         }
 
         return kontenliste;

@@ -50,6 +50,56 @@
         
           </c:if>
           
+          
+          <h1>Kategorie mit Schlagwörtern erstellen: </h1>
+          <p>Gib bitte mindestens ein Schlagwort ein, trenne alle weiteren mit Komma ohne Leerzeichen, z.B, "rewe,edeka,lebensmittel" </p>
+          <p>Tauchen die Schlagwörter im Verwendungszweck einer Transaktion auf, werden diese Posten automatisch der Kategorie zugeordnet </p>
+          
+          <form method="POST" action="KategorienServlet">
+        
+          	<input type="text" name="kategorie" placeholder="Kategorie" />
+          	<input type="text" name="schlagwoerter" placeholder="Schlagwörter" />
+          	
+          	<input type="submit" value="Kategorie anlegen" />
+          </form>
+          
+          <h2>Ordnen aller Transaktionen nach einer Kategorie</h2>
+          <p>Wähle dazu eine Kategorie aus, von der alle zugehörigen Posten angezeigt werden sollen. </p>
+          
+          <c:if test="${ sessionScope.kategorienListe.size() < 1 }">
+          	<p> Es wurden noch keine Kategorien angelegt </p>
+          </c:if>
+          
+          <c:if test="${ sessionScope.kategorienListe.size() > 0}">
+	          <form method="POST" action="KategorienServlet">
+	          	<select name="kategorie_ausgewaehlt">
+	          		<c:forEach var="i" begin="0" end="${sessionScope.kategorienListe.size() - 1}">  
+		          		<option value="${sessionScope.kategorienListe.get(i)}">
+		          			${sessionScope.kategorienListe.get(i)}
+		          		</option>
+		          	</c:forEach>
+	          	</select>
+	          	
+	          	<button type="submit">Transaktionen anzeigen</button>
+		         
+	          </form>
+	  
+          </c:if>
+          
+          <c:if test="${ transaktionsFazit != null }">
+          	<p>Hier sind ihre Transaktionen in der Kategorie: </p>
+          	<c:forEach var="i" begin="0" end="${transaktionsFazit.size() - 1}">
+          		<c:if test="${ i < transaktionsFazit.size() - 1}">
+          			<p>${ transaktionsFazit.get(i) }</p>
+          		</c:if>
+          		
+          		<c:if test="${ i == transaktionsFazit.size() - 1}">
+          			Summe: ${ transaktionsFazit.get(i) }
+          		</c:if>
+          	</c:forEach>
+          </c:if>
+  
+          
         </div>
      
 
