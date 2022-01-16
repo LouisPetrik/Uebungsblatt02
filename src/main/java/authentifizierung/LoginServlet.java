@@ -4,7 +4,6 @@ package authentifizierung;
  * Dieses Servlet ist dafür da, damit sich bestehende Nutzer über die login.jsp anmelden können.
  */
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
@@ -15,19 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
-
-import banking.Konto;
 import banking.Kunde;
 import database.DatabaseKategorie;
+import database.DatabaseKonto;
 import database.DatabaseKunden;
 
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public LoginServlet() {
         super();
     }
@@ -37,12 +32,7 @@ public class LoginServlet extends HttpServlet {
      * die Daten verloren gehen - was leider ziemlich nervig ist.
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         System.out.println("get request an LoginServlet");
-
-
-
-
         request.getRequestDispatcher("konto.jsp").forward(request, response);
     }
 
@@ -52,53 +42,38 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String passwort = request.getParameter("passwort");
 
-
-        // hier wird die E-mail mit regex getestet
-        boolean regexMatch = false;
-
-        regexMatch = Pattern.matches("^[^@\\s]+@[^@\\s\\.]+\\.[^@\\.\\s]+$", email);
-
-        if (regexMatch) {
-            System.out.println("Die E-Mail ist Regex-konform");
-        } else {
+        // TODO: check regex again
+        if (!Pattern.matches("(?=^.{5,254})[a-z+\\-\\.]{1,63}@[a-z+\\-\\.]+\\.[a-z+\\-\\.]+", email)) {
             System.out.println("Die E-Mail ist nicht regex-konform");
-        }
-
-
-        // die eingaben in der datenbank überprüfen, und gegebenfalls den kunden einloggen
-
-        Kunde eingeloggterKunde = DatabaseKunden.kundeEinlogggen(email, passwort);
-
-        // Insofern es keinen fehler gab, ist das fehlermeldungs-feld des objekts null
-        if (eingeloggterKunde.fehlermeldung == null) {
-
-            System.out.println("LoginServlet: Kunde wurde erfolgreich eingeloggt");
-            System.out.println("LoginServlet, Kundenname " + eingeloggterKunde.vorname);
-
-            // Kundenobjekt wird erstellt und in der Session gespeichert:
-            session.setAttribute("kunde", eingeloggterKunde);
-
-            // Da der Kunde erfolgreich eingeloggt wurde, wird ihm seine persönliche Konto-Seite angezeigt:
-            // Eventuell muss hier statt auf die JSP selbst auf die GET methode des KontoServlets umgeleitet werden
-            // damit vor dem rendern die DB-abfrage stattfinden kann.
-            
-            // damit der kunde in der konto-seite auf die kategorien zugreifen kann, werden diese noch aus der DB in der session gespeichert: 
-            ArrayList<String> kategorienListe = new ArrayList<>(DatabaseKategorie.kategorienAusgeben());
-            
-            session.setAttribute("kategorienListe", kategorienListe); 
-            
-            request.getRequestDispatcher("konto.jsp").forward(request, response);
-
-        } else {
-            System.out.println("Fehler im Kundenobjekt " + eingeloggterKunde.fehlermeldung);
-
-            // insofern ein fehler auftritt, bleibt der user mit einer fehlermeldung auf der login.jsp
-
-            request.setAttribute("fehlertyp", eingeloggterKunde.fehlermeldung);
+            request.setAttribute("fehlertyp", "Die E-Mail ist nicht regex-konform");
             request.getRequestDispatcher("login.jsp").forward(request, response);
-
+            return;
         }
 
+        Kunde kunde = DatabaseKunden.getKunde(email);
+        if (kunde == null) {
+            System.out.println("Kunde wurde nicht gefunden");
+            request.setAttribute("fehlertyp", "Kunde wurde nicht gefunden(email falsch?)");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
+        
+        // passwort überprüfen
+        if (passwort.equals(kunde.getPasswort())) {			// richtiges passwort
+        	// konten von der datenbank in kunde speichern
+        	kunde.kontenliste = DatabaseKonto.getKonten(email);
+        	session.setAttribute("kunde", kunde);
+        	
+        	if (!kunde.kontenliste.isEmpty()) {
+        		session.setAttribute("konten", kunde.kontenAsHTML());
+        	}
 
+            // persönliche Konto-Seite angezeigen
+            request.getRequestDispatcher("konto.jsp").forward(request, response);
+        } else {										// falsches passwort
+            System.out.println("Passwort ist falsch");
+            request.setAttribute("fehlertyp", "Passwort ist falsch");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        }
     }
 }

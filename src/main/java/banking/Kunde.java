@@ -1,28 +1,22 @@
 package banking;
 
-import banking.Konto;
 import java.util.ArrayList;
 
 public class Kunde {
-    public Integer kundenid;
-    public String vorname;
-    public String nachname;
-    public Integer alter;
-    public String email;
-    public String bankinstitut;
-    public String passwort;
-    public Boolean newsletter;
+    private final int kundenid;
+    private String vorname;
+    private String nachname;
+    private int alter;
+    private String email;
+    private String bankinstitut;
+    private String passwort;
+    private boolean newsletter;
 
-    // Insofern es ein Problem mit dem Kundenobjekt gibt, z. B. Kein Kunde gefunden wird, wird hier
-    // die fehlermeldung gespeichert.
-    public String fehlermeldung;
+    public ArrayList<Konto> kontenliste = new ArrayList<Konto>();
 
-    // Ein nutzer kann mehrere Konten haben, die als Liste von Konten-Objekten gespeichert werden.
-    public ArrayList<Konto> kontenliste = new ArrayList<>();
-
-
-    public Kunde(String vorname, String nachname, Integer alter, String email, String bankinstitut, String passwort, Boolean newsletter) {
-        this.vorname = vorname;
+    public Kunde(int kundenid, String vorname, String nachname, Integer alter, String email, String bankinstitut, String passwort, Boolean newsletter) {
+        this.kundenid = kundenid;
+    	this.vorname = vorname;
         this.nachname = nachname;
         this.alter = alter;
         this.email = email;
@@ -44,17 +38,6 @@ public class Kunde {
             System.out.println("Beim Einloggen: Der Kunde hat noch keine Konten.");
             return ""; // für KontoServlet -> kein form erstellen sondern nachricht
         }
-    }
-
-    /* Hier folgen sämtliche Getter-Methoden für das Kundenobjekt.
-    Sie helfen dabei, dass Objekt-Werte in den Templates genutzt werden können und
-    schützen vor versehentlichen mutaten beim Zugriff auf die Attribute via .-Syntax.
-    */
-
-    // Der setter für die kundenid. Kundenid ist nicht im konstruktur, damit man dynamischer die ID setzen kann.
-    // Z.B weil die ID von der DB abhängt und automatisch vergeben wird, daher kann sie nicht schon über den konstruktor festgelegt werden.
-    public void setKundenid(Integer kundenid) {
-        this.kundenid = kundenid;
     }
 
     public Integer getKundenid() {

@@ -41,6 +41,11 @@ h2 {
 	font-size: 20px !important; 
 }
 
+.txs {
+	margin-bottom: 45px !important; 
+	/* da der footer(wegen position fixed) Inhalte überdecken könnte*/
+}
+
 .footer {
   position: fixed;
   left: 0;

@@ -1,17 +1,13 @@
 package banking;
 
-import java.util.UUID;
-
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import banking.Transaktion;
 
 public class Konto {
     public final String name;
     public final String kundenemail;
     public final Integer kontoid;
-    private Double kontostand;
+    private double kontostand;
 
     public ArrayList<Transaktion> txs = new ArrayList<>();
 
@@ -84,29 +80,33 @@ public class Konto {
                 return;
             }
 
-            float f14 = 0.f;
+            double f14 = 0.f;
             fields[14] = fields[14].replace(',', '.');
             try {
-                 f14 = Float.parseFloat(fields[14]);
+                 f14 = Double.parseDouble(fields[14]);
             } catch (NumberFormatException e) {
-                System.out.println("Feld 15 sollte ein float sein");
+                System.out.println("Feld 15 sollte ein double/float sein");
                 return;
             }
 
-            txs.add(new Transaktion(fields[0], fields[5], fields[3], fields[4], fields[12], f14, fields[15]));
+            txs.add(new Transaktion(fields[4], f14));
         }
+        
+        setKontostand();
 
         scanner.close();
     }
 
-    public float getKontostand() {
-        float res = 0;
+    public double getKontostand() {
+    	return kontostand;
+    }
+    
+    public void setKontostand() {
+    	kontostand = 0.0;
 
         for (Transaktion tx : txs) {
-            res += tx.betrag;
+        	kontostand += tx.betrag;
         }
-
-        return res;
     }
 
     public boolean hasTxs() {
@@ -116,9 +116,11 @@ public class Konto {
     public String txsAsHTML() {
         StringBuilder sb = new StringBuilder();
 
+        sb.append("<table>");
         for (Transaktion tx : txs) {
-            sb.append(tx.asHTML() + "<br/>");
+            sb.append("<tr>" + tx.asHTML() + "<tr/>");
         }
+        sb.append("</table>");
 
         return sb.toString();
     }

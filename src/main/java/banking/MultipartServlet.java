@@ -47,34 +47,19 @@ public class MultipartServlet extends HttpServlet {
                 if (konto_idx < kunde.kontenliste.size()) {
                     kunde.kontenliste.get(konto_idx).loadCSV(csvFile);
 
-                    // TODO: to addKonto
-                    DatabaseKonto.setKontostand(
-                        kunde.kontenliste.get(konto_idx).kundenemail,
-                        kunde.kontenliste.get(konto_idx).name,
-                        kunde.kontenliste.get(konto_idx).getKontostand());
+                    // änderungen in der Datenbank speichern
+                    if (!DatabaseKonto.updateKonto(kunde.kontenliste.get(konto_idx))) {
+                    	System.out.println("Konto konnte in der Datenbank nicht aktualiert werden");
+                    	session.setAttribute("csvErr", "Konto konnte in der Datenbank nicht aktualiert werden");
+                    }
 
-
-                    int kontoId = DatabaseKonto.getKontoId(kunde.kontenliste.get(konto_idx).kundenemail, kunde.kontenliste.get(konto_idx).name);
-                    System.out.println("kontoId: " + kontoId);
-                    DatabaseKonto.addTxs(kontoId, kunde.kontenliste.get(konto_idx).txs);
-
-                    String kontostand = "<p>kontostand: " + kunde.kontenliste.get(konto_idx).getKontostand() + "</p>";
-                    session.setAttribute("kontostand", kontostand);
+                    if (kunde.kontenliste.get(konto_idx).hasTxs()) {
+                        session.setAttribute("showKonto", kunde.kontenliste.get(konto_idx).txsAsHTML());
+                    }
+                    
+                    session.setAttribute("kontostand", kunde.kontenliste.get(konto_idx).getKontostand());
                 }
             }
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("<div class=\"card\"> <div class=\"card-body\">");
-
-            if (kunde.kontenliste.get(konto_idx).hasTxs()) {
-                sb.append(kunde.kontenliste.get(konto_idx).txsAsHTML());
-            } else {
-               sb.append("<b>keine Transaktionen (laden sie eine CSV hoch)</b>");
-            }
-
-            sb.append("</div></div>");
-
-            session.setAttribute("showKonto", sb.toString());
         }
 
         request.getRequestDispatcher("konto.jsp").include(request, response);

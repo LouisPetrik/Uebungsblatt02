@@ -8,7 +8,6 @@ import java.sql.SQLException;
  * @author Jan Sarstedt
  */
 public class DatabaseConnection {
-
     protected static Connection con;
     private static final String DB_SERVER = "127.0.0.1:5432";
     private static final String DB_NAME = "uebung02";
@@ -28,7 +27,7 @@ public class DatabaseConnection {
         } catch (ClassNotFoundException cfe) {
             System.out.println(
                 "PostgresDb: Treiber konnte nicht gefunden werden. \n"
-                + "F�gen Sie die postgresql.jar in WEB-INF/lib ein!");
+                + "Fügen Sie die postgresql.jar in WEB-INF/lib ein!");
             cfe.printStackTrace();
         }
         return null;
@@ -45,7 +44,7 @@ public class DatabaseConnection {
         }
     }
 
-    /** Schlie�e die Verbindung */
+    /** Schließe die Verbindung */
     public static void closeConnection() {
         try {
             con.close();
