@@ -42,8 +42,7 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String passwort = request.getParameter("passwort");
 
-        // TODO: check regex again
-        if (!Pattern.matches("(?=^.{5,254})[a-z+\\-\\.]{1,63}@[a-z+\\-\\.]+\\.[a-z+\\-\\.]+", email)) {
+        if (!Pattern.matches("(?=^.{5,254}$)[a-z+\\-\\.]{1,63}@[a-z+\\-\\.]+\\.[a-z+\\-\\.]+", email)) {
             System.out.println("Die E-Mail ist nicht regex-konform");
             request.setAttribute("fehlertyp", "Die E-Mail ist nicht regex-konform");
             request.getRequestDispatcher("login.jsp").forward(request, response);

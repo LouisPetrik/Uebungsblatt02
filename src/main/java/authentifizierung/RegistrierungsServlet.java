@@ -78,7 +78,7 @@ public class RegistrierungsServlet extends HttpServlet {
             return;
         }
 
-        if (!Pattern.matches("(?=^.{5,254})[a-z+\\-\\.]{1,63}@[a-z+\\-\\.]+\\.[a-z+\\-\\.]+", email)) {
+        if (!Pattern.matches("(?=^.{5,254}$)[a-z+\\-\\.]{1,63}@[a-z+\\-\\.]+\\.[a-z+\\-\\.]+", email)) {
             System.out.println("Die E-Mail ist nicht Regex-konform");
 
             restoreForm(request);
@@ -86,15 +86,14 @@ public class RegistrierungsServlet extends HttpServlet {
             return;
         }
 
-        if (!Pattern.matches("[A-ZÄÜÖ][a-zäüö]+(( |\\-)[a-zäüö]+)*", vorname)) {
+        if (!Pattern.matches("[A-ZÄÜÖ][a-zäüö]*(( |\\-)[a-zäüö]+)*", vorname)) {
            System.out.println("Vorname ist nicht Regex konform");
             restoreForm(request);
             sendeFehlerMeldung("Vorname ist nicht Regex konform", request, response);
             return;
         }
-           
-        // TODO: check if regex is really fine
-        if (!Pattern.matches("[A-ZÄÜÖ][a-zäüö]+(( |\\-)[a-zäüö]+)*", nachname)) {
+
+        if (!Pattern.matches("[A-ZÄÜÖ][a-zäüö]*(( |\\-)[a-zäüö]+)*", nachname)) {
             System.out.println("Nachname ist nicht Regex konform");
             restoreForm(request);
             sendeFehlerMeldung("Nachname ist nicht Regex konform", request, response);
@@ -111,7 +110,7 @@ public class RegistrierungsServlet extends HttpServlet {
         }
 
         Kunde kunde = DatabaseKunden.addKunde(vorname, nachname, alter, email,
-        		bankinstitut, passwort, newsletter);
+                bankinstitut, passwort, newsletter);
         if (kunde == null) {
             System.out.println("Fehler beim speichern in der Datenbank");
 
