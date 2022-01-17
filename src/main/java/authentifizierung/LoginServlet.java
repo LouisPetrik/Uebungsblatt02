@@ -57,20 +57,22 @@ public class LoginServlet extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
-        
+
         // passwort überprüfen
-        if (passwort.equals(kunde.getPasswort())) {			// richtiges passwort
-        	// konten von der datenbank in kunde speichern
-        	kunde.kontenliste = DatabaseKonto.getKonten(email);
-        	session.setAttribute("kunde", kunde);
-        	
-        	if (!kunde.kontenliste.isEmpty()) {
-        		session.setAttribute("konten", kunde.kontenAsHTML());
-        	}
+        if (passwort.equals(kunde.getPasswort())) {         // richtiges passwort
+            // konten von der datenbank in kunde speichern
+            kunde.kontenliste = DatabaseKonto.getKonten(email);
+            session.setAttribute("kunde", kunde);
+
+            if (!kunde.kontenliste.isEmpty()) {
+                session.setAttribute("konten", kunde.kontenAsHTML());
+            }
+
+            session.setAttribute("kategorienListe", DatabaseKategorie.kategorienAusgeben());
 
             // persönliche Konto-Seite angezeigen
             request.getRequestDispatcher("konto.jsp").forward(request, response);
-        } else {										// falsches passwort
+        } else {                                        // falsches passwort
             System.out.println("Passwort ist falsch");
             request.setAttribute("fehlertyp", "Passwort ist falsch");
             request.getRequestDispatcher("login.jsp").forward(request, response);

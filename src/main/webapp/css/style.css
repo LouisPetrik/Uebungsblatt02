@@ -41,29 +41,32 @@ h2 {
     font-size: 20px !important;
 }
 
-.konto {
-    margin-bottom: 45px !important;
-    /* da der footer(wegen position fixed) Inhalte überdecken könnte*/
-}
 
-table{
+table {
     width:100%;
     border-collapse:collapse;
 }
-table td{
-    padding:7px; border:#4e95f4 1px solid;
+
+table td {
+    padding:7px; border:#4E95F4 1px solid;
 }
-/* provide some minimal visual accomodation for IE8 and below */
-table tr{
-    background: #b8d1f3;
+
+table tr {
+    background: #B8D1F3;
 }
-/*  Define the background color for all the ODD background rows  */
-table tr:nth-child(odd){
-    background: #b8d1f3;
+
+table tr:nth-child(odd) {
+    background: #B8D1F3;
 }
-/*  Define the background color for all the EVEN background rows  */
-table tr:nth-child(even){
-    background: #dae5f4;
+
+table tr:nth-child(even) {
+    background: #DAE5F4;
+}
+
+
+.container {
+    margin-bottom: 45px !important;
+    /* da der footer(wegen position fixed) Inhalte überdecken könnte*/
 }
 
 .footer {
@@ -81,6 +84,7 @@ table tr:nth-child(even){
     font-size: 16px;
     padding: 10px;
 }
+
 
 .introbox {
   margin-top: 50px;
